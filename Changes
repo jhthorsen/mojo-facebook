@@ -1,0 +1,10 @@
+Revision history for Mojo-Facebook
+
+0.01
+       * Started project
+       * Add Mojo::Facebook->fecth
+       * Add Mojo::Facebook->post
+       * Add Mojo::Facebook->comment
+       * Add Mojo::Facebook->publish
+       * Add Mojo::Facebook->delete_object
+       * Add Mojo::Facebook->picture

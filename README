@@ -1,0 +1,193 @@
+NAME
+    Mojo::Facebook - Talk with Facebook
+
+DESCRIPTION
+    This module implements basic actions to the Facebook graph protocol.
+
+SYNOPSIS
+        use Mojo::Facebook;
+        my $fb = Mojo::Facebook->new(access_token => $some_secret);
+
+        Mojo::IOLoop->delay(
+            sub {
+                my($delay) = @_;
+                $fb->fetch({
+                    from => '1234567890',
+                    fields => 'name',
+                }, $delay->begin);
+            },
+            sub {
+                my($delay, $res) = @_;
+                warn $res->{error} || $res->{name};
+            },
+        )
+
+ERROR HANDLING
+    Facebook JSON errors will be set in the $res hash returned to the
+    callback:
+
+  Error messages
+    *   Could not decode JSON from Facebook
+
+    *   $fb_json->{error}{message}
+
+    *   HTTP status message
+
+    *   Unknown error from JSON structure
+
+ATTRIBUTES
+  access_token
+    This attribute need to be set when doing "fetch" on private objects or
+    when issuing "post".
+
+  app_namespace
+    This attribute is used by "publish" as prefix to the publish URL:
+
+        https://graph.facebook.com/$id/$app_namespace:$action
+
+METHODS
+  fetch
+        $self->fetch({
+            from => $id,
+            fields => [...]
+            ids => [...],
+            limit => $Int,
+            offset => $Int,
+        }, $callback);
+
+    Will fetch information from Facebook about a user.
+
+    $id can be ommitted and will then default to "me". $callback will be
+    called like this:
+
+        $callback->($self, $res);
+
+    $res will be a hash-ref containing the result. Look for the "error" key
+    to check for errors.
+
+  post
+        $self->post({
+            to => $id,
+            message => $str,
+            link => $url,
+            name => $str,
+            caption => $str,
+            description => $str,
+            picture => $url,
+        }, $callback);
+
+    Creates a post at $who's wall, looking like this:
+
+        .------------------------------------.
+        | $message ...                       |
+        |                                    |
+        | .----------.                       |
+        | | $picture |  [$link]($name)       |
+        | |          |  $caption ...         |
+        | |          |  $description ...     |
+        | '----------'                       |
+        '------------------------------------'
+
+    $callback will be called like this:
+
+        $callback->($self, $res);
+
+    $res will be a hash-ref containing the result. Look for the "error" key
+    to check for errors.
+
+    TODO: Tags are not supported yet. Getting
+
+        {
+            "error":{
+                "message":"(#100) Array does not resolve to a valid user ID",
+                "type":"OAuthException",
+                "code":100
+            }
+        }
+
+  comment
+        $self->comment({ on => $id, message => $str }, $callback);
+
+    Will add a comment to a graph element with the given $id.
+
+    $callback will be called like this:
+
+        $callback->($self, $res);
+
+    $res will be a hash-ref containing the result. Look for the "error" key
+    to check for errors.
+
+  publish
+        $self->publish({
+            to => $id,
+            action => $str,
+            $object_name => $object_url,
+
+            # optional
+            start_time => $DateTime,
+            end_time => $DateTime,
+            expires_in => $int,
+            message => $str,
+            place => $facebook_id,
+            ref => String,
+            tags => "$facebook_id,...",
+
+            # any other key/value is considered to be custom
+            $custom_attribute => $any,
+        });
+
+    Publish a story at $who's wall, looking like this:
+
+        .--------------------------------------.
+        | $who $action a $object_name ... $app |
+        |                                      |
+        | .----------.                         |
+        | |  $image  |  [$url]($title)         |
+        | |          |  $descripton ...        |
+        | '----------'                         |
+        '--------------------------------------'
+
+    Required HTML:
+
+        <meta property="fb:app_id" content="$app_id" />
+        <meta property="og:image" content="$url" />
+        <meta property="og:title" content="$str" />
+        <meta property="og:url" content="$url_to_self" />
+        <meta property="og:description" content="$str">
+        <meta property="og:type" content="$app_namespace:$action" />
+
+    $callback will be called like this:
+
+        $callback->($self, $res);
+
+    $res will be a hash-ref containing the result. Look for the "error" key
+    to check for errors.
+
+  delete_object
+        $self->delete_object($id, $callback);
+
+    Will try to remove an object from Facebook.
+
+    &callback will be called like this:
+
+        $callback->($self, $res);
+
+    $res will be a hash-ref containing the result. Look for the "error" key
+    to check for errors.
+
+  picture
+        $url = $self->picture;
+        $url = $self->picture($who, $type);
+
+    Returns a Mojo::URL object with the URL to a Facebook image.
+
+    $who defaults to "me". $type can be "square", "small" or "large".
+    Default to "square".
+
+COPYRIGHT & LICENSE
+    This library is free software. You can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
+AUTHOR
+    Jan Henning Thorsen - jhthorsen@cpan.org
+
