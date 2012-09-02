@@ -56,7 +56,7 @@ use Mojo::UserAgent;
 use Mojo::Util qw/ url_unescape /;
 use constant TEST => $INC{'Test/Mojo.pm'};
 
-our $VERSION = '0.02';
+our $VERSION = eval '0.02';
 
 =head1 ATTRIBUTES
 

@@ -1,6 +1,6 @@
 Revision history for Mojo-Facebook
 
-0.02
+0.02     Sun Sep  2 23:47:09 2012
        * Add Mojolicious::Plugin::Facebook
 
 0.01
