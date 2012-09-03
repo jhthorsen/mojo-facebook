@@ -2,7 +2,7 @@ NAME
     Mojo::Facebook - Talk with Facebook
 
 VERSION
-    0.02
+    0.0201
 
 DESCRIPTION
     This module implements basic actions to the Facebook graph protocol.

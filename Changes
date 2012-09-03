@@ -1,6 +1,6 @@
 Revision history for Mojo-Facebook
 
-0.0201
+0.0201   Mon Sep  3 20:43:43 2012
        * Need to keep the Mojo::Facebook object around when created inside
          the helper
 
