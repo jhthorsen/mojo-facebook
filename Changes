@@ -1,5 +1,9 @@
 Revision history for Mojo-Facebook
 
+0.0201
+       * Need to keep the Mojo::Facebook object around when created inside
+         the helper
+
 0.02     Sun Sep  2 23:47:09 2012
        * Add Mojolicious::Plugin::Facebook
 
