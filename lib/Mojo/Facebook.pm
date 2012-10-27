@@ -17,6 +17,7 @@ This module implements basic actions to the Facebook graph protocol.
     use Mojo::Facebook;
     my $fb = Mojo::Facebook->new(access_token => $some_secret);
 
+    # fetch facebook name
     Mojo::IOLoop->delay(
         sub {
             my($delay) = @_;
@@ -30,6 +31,16 @@ This module implements basic actions to the Facebook graph protocol.
             warn $res->{error} || $res->{name};
         },
     )
+
+    # fetch cover photo url
+    $fb->fetch({
+        from => '1234567890',
+        fields => ['cover']
+    }, sub {
+        my($fb, $res) = @_;
+        return $res->{errors} if $res->{error};
+        warn $res->{cover}{source}; # URL
+    });
 
 =head1 ERROR HANDLING
 
