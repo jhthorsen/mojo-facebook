@@ -6,7 +6,7 @@ Mojo::Facebook - Talk with Facebook
 
 =head1 VERSION
 
-0.0201
+0.0203
 
 =head1 DESCRIPTION
 
@@ -67,14 +67,28 @@ use Mojo::UserAgent;
 use Mojo::Util qw/ url_unescape /;
 use constant TEST => $INC{'Test/Mojo.pm'};
 
-our $VERSION = eval '0.0201';
+our $VERSION = eval '0.0203';
 
 =head1 ATTRIBUTES
 
 =head2 access_token
 
 This attribute need to be set when doing L</fetch> on private objects
-or when issuing L</post>.
+or when issuing L</post>. This is not "code" query param from the
+Facebook authentication process, something which need to be fetched
+from Facebook later on. See the source code forL<Mojolicious::Plugin::OAuth2>
+for details.
+
+    $oauth2->get_token(facebook => sub {
+        my($oauth2, $access_token) = @_;
+        $fb = Mojo::Facebook->new(access_token => $access_token);
+        $fb->post({
+            to => $fb_uid,
+            message => "Mojo::Facebook works!",
+        }, sub {
+            # ...
+        });
+    });
 
 =head2 app_namespace
 

@@ -2,7 +2,7 @@ NAME
     Mojo::Facebook - Talk with Facebook
 
 VERSION
-    0.0201
+    0.0203
 
 DESCRIPTION
     This module implements basic actions to the Facebook graph protocol.
@@ -11,6 +11,7 @@ SYNOPSIS
         use Mojo::Facebook;
         my $fb = Mojo::Facebook->new(access_token => $some_secret);
 
+        # fetch facebook name
         Mojo::IOLoop->delay(
             sub {
                 my($delay) = @_;
@@ -24,6 +25,16 @@ SYNOPSIS
                 warn $res->{error} || $res->{name};
             },
         )
+
+        # fetch cover photo url
+        $fb->fetch({
+            from => '1234567890',
+            fields => ['cover']
+        }, sub {
+            my($fb, $res) = @_;
+            return $res->{errors} if $res->{error};
+            warn $res->{cover}{source}; # URL
+        });
 
 ERROR HANDLING
     Facebook JSON errors will be set in the $res hash returned to the
@@ -41,7 +52,21 @@ ERROR HANDLING
 ATTRIBUTES
   access_token
     This attribute need to be set when doing "fetch" on private objects or
-    when issuing "post".
+    when issuing "post". This is not "code" query param from the Facebook
+    authentication process, something which need to be fetched from Facebook
+    later on. See the source code forMojolicious::Plugin::OAuth2 for
+    details.
+
+        $oauth2->get_token(facebook => sub {
+            my($oauth2, $access_token) = @_;
+            $fb = Mojo::Facebook->new(access_token => $access_token);
+            $fb->post({
+                to => $fb_uid,
+                message => "Mojo::Facebook works!",
+            }, sub {
+                # ...
+            });
+        });
 
   app_namespace
     This attribute is used by "publish" as prefix to the publish URL:
