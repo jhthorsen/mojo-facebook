@@ -442,6 +442,3 @@ Jan Henning Thorsen - jhthorsen@cpan.org
 =cut
 
 1;
-=cut
-
-1;
