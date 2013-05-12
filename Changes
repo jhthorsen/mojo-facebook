@@ -1,6 +1,6 @@
 Revision history for Mojo-Facebook
 
-0.03
+0.03     Sun May 12 10:56:52 2013
        * Add "scheme" attribute
        * Fix callbacks are called with $self
        * Remove _url attribute

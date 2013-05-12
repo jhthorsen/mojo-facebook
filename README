@@ -2,7 +2,7 @@ NAME
     Mojo::Facebook - Talk with Facebook
 
 VERSION
-    0.0203
+    0.03
 
 DESCRIPTION
     This module implements basic actions to the Facebook graph protocol.
@@ -72,6 +72,9 @@ ATTRIBUTES
     This attribute is used by "publish" as prefix to the publish URL:
 
         https://graph.facebook.com/$id/$app_namespace:$action
+
+  scheme
+    Used to either run requests over "http" or "https". Default to "https".
 
 METHODS
   fetch
@@ -218,4 +221,11 @@ COPYRIGHT & LICENSE
 
 AUTHOR
     Jan Henning Thorsen - jhthorsen@cpan.org
+
+POD ERRORS
+    Hey! The above document had some coding errors, which are explained
+    below:
+
+    Around line 445:
+        =cut found outside a pod block. Skipping to next block.
 
