@@ -6,7 +6,7 @@ Mojo::Facebook - Talk with Facebook
 
 =head1 VERSION
 
-0.03
+0.0301
 
 =head1 DESCRIPTION
 
@@ -67,7 +67,7 @@ use Mojo::UserAgent;
 use Mojo::Util qw/ url_unescape /;
 use constant TEST => $INC{'Test/Mojo.pm'};
 
-our $VERSION = '0.03';
+our $VERSION = '0.0301';
 
 =head1 ATTRIBUTES
 

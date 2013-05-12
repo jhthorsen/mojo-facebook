@@ -2,7 +2,7 @@ NAME
     Mojo::Facebook - Talk with Facebook
 
 VERSION
-    0.03
+    0.0301
 
 DESCRIPTION
     This module implements basic actions to the Facebook graph protocol.
@@ -221,11 +221,4 @@ COPYRIGHT & LICENSE
 
 AUTHOR
     Jan Henning Thorsen - jhthorsen@cpan.org
-
-POD ERRORS
-    Hey! The above document had some coding errors, which are explained
-    below:
-
-    Around line 445:
-        =cut found outside a pod block. Skipping to next block.
 
