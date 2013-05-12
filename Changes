@@ -1,6 +1,6 @@
 Revision history for Mojo-Facebook
 
-0.0302
+0.0302   Sun May 12 11:16:04 2013
        * Fix picture() must also use "scheme"
 
 0.0301   Sun May 12 10:59:38 2013
