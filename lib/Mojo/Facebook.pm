@@ -96,12 +96,16 @@ This attribute is used by L</publish> as prefix to the publish URL:
 
     https://graph.facebook.com/$id/$app_namespace:$action
 
+=head2 protocol
+
+Used to either run requests over "http" or "https". Default to "https".
+
 =cut
 
 has access_token => '';
 has app_namespace => '';
+has protocol => 'https';
 has _ua => sub { Mojo::UserAgent->new };
-has _url => sub { $ENV{FAKE_FACEBOOK_URL} || 'https://graph.facebook.com' };
 
 =head1 METHODS
 
@@ -129,7 +133,7 @@ check for errors.
 
 sub fetch {
     my($self, $args, $cb) = @_;
-    my $tx = $self->_ua->build_tx(GET => $self->_url);
+    my $tx = $self->_tx('GET');
     my $url = $tx->req->url;
 
     if($self->access_token) {
@@ -145,7 +149,7 @@ sub fetch {
         $url->query([ $key => $args->{$key} ]);
     }
 
-    $url->path($args->{from} || 'me');
+    push @{ $url->path->parts }, $args->{from} || 'me';
     $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
 }
 
@@ -195,8 +199,9 @@ TODO: Tags are not supported yet. Getting
 sub post {
     my($self, $args, $cb) = @_;
     my($message, $tags) = $self->_message_to_tags($args->{message});
-    my $tx = $self->_ua->build_tx(POST => $self->_url);
+    my $tx = $self->_tx('POST');
     my $p = Mojo::Parameters->new;
+    my $path = $tx->req->url->path;
 
     $p->append(access_token => $self->access_token);
     $p->append(message => $message);
@@ -211,10 +216,10 @@ sub post {
     #}
 
     if($args->{action} and $args->{object}) {
-        $tx->req->url->path($args->{to} .'/' .join ':', @$args{qw/ object action /});
+        push @{ $path->parts }, $args->{to}, join ':', @$args{qw/ object action /};
     }
     else {
-        $tx->req->url->path($args->{to} .'/feed');
+        push @{ $path->parts }, $args->{to}, 'feed';
     }
 
     $tx->req->body($p->to_string);
@@ -256,13 +261,13 @@ check for errors.
 
 sub comment {
     my($self, $args, $cb) = @_;
-    my $tx = $self->_ua->build_tx(POST => $self->_url);
+    my $tx = $self->_tx('POST');
     my $p = Mojo::Parameters->new;
 
     $p->append(access_token => $self->access_token);
     $p->append(message => $args->{message});
     $tx->req->body($p->to_string);
-    $tx->req->url->path($args->{on} .'/comments');
+    push @{ $tx->req->url->path->parts }, $args->{on}, 'comments';
     $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
 }
 
@@ -317,7 +322,7 @@ check for errors.
 
 sub publish {
     my($self, $args, $cb) = @_;
-    my $tx = $self->_ua->build_tx(POST => $self->_url);
+    my $tx = $self->_tx('POST');
     my $p = Mojo::Parameters->new;
     my $tags = [];
 
@@ -334,7 +339,8 @@ sub publish {
     }
 
     $p->append(access_token => $self->access_token);
-    $tx->req->url->path(sprintf '%s/%s:%s', $args->{to}, $self->app_namespace, $args->{action});
+
+    push @{ $tx->req->url->path }, $args->{to}, join ':', $self->app_namespace, $args->{action};
     $tx->req->body($p->to_string);
     $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
 }
@@ -356,10 +362,10 @@ check for errors.
 
 sub delete_object {
     my($self, $id, $cb) = @_;
-    my $tx = $self->_ua->build_tx(DELETE => $self->_url);
+    my $tx = $self->_tx('DELETE');
 
     $tx->req->url->query->param(access_token => $self->access_token);
-    $tx->req->url->path($id);
+    push @{ $tx->req->url->path->parts }, $id;
     $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
 }
 
@@ -401,6 +407,14 @@ sub __check_response {
 
     $json->{__tx} = $tx if TEST;
     return undef, $json;
+}
+
+sub _tx {
+    my($self, $method) = @_;
+    my $url = Mojo::URL->new($ENV{FAKE_FACEBOOK_URL} || 'https://graph.facebook.com');
+
+    $url->protocol($self->protocol);
+    $self->_ua->build_tx($method => $url);
 }
 
 =head1 COPYRIGHT & LICENSE

@@ -1,5 +1,9 @@
 Revision history for Mojo-Facebook
 
+0.03
+       * Add "protocol" attribute
+       * Remove _url attribute
+
 0.0203   Sat Nov 10 15:39:33 2012
        * Fix bug in documentation for "access_token"
 

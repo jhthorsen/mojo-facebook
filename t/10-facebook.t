@@ -6,10 +6,12 @@ use Mojo::Facebook;
 my $t = Test::Mojo->new('main');
 my($fb, $tx);
 
-post '/me/feed' => sub { shift->render_json({ id => 1234 }) };
+$ENV{FAKE_FACEBOOK_URL} = '/dummy';
+
+post '/dummy/me/feed' => sub { shift->render_json({ id => 1234 }) };
 
 { # post
-    $fb = Mojo::Facebook->new(_url => '/', _ua => $t->ua);
+    $fb = Mojo::Facebook->new(_ua => $t->ua);
     my($message, $tags) = $fb->_message_to_tags('@[289459768534:Some person] did some cool stuff with @[1234567891:Some other person] yey!');
 
     is($message, 'Some person did some cool stuff with Some other person yey!', '@[...] was removed from message');
@@ -59,7 +61,7 @@ TODO: {
 }
 
 { # publish
-    $fb = Mojo::Facebook->new(_url => '/', _ua => $t->ua);
+    $fb = Mojo::Facebook->new(_ua => $t->ua);
     $fb->access_token('secr3t');
     $fb->app_namespace('coolestapp');
     $fb->publish({
@@ -80,7 +82,7 @@ TODO: {
 }
 
 { # delete_object
-    $fb = Mojo::Facebook->new(_url => '/', _ua => $t->ua, access_token => 'secr3t');
+    $fb = Mojo::Facebook->new(_ua => $t->ua, access_token => 'secr3t');
     $fb->delete_object(289459768534, sub { $tx = $_[1]->{__tx}; Mojo::IOLoop->stop });
 
     Mojo::IOLoop->start;
