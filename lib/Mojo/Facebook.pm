@@ -136,6 +136,8 @@ sub fetch {
     my $tx = $self->_tx('GET');
     my $url = $tx->req->url;
 
+    Scalar::Util::weaken($self);
+
     if($self->access_token) {
         $url->query([ access_token => url_unescape $self->access_token ]);
     }
@@ -150,7 +152,7 @@ sub fetch {
     }
 
     push @{ $url->path->parts }, $args->{from} || 'me';
-    $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
+    $self->_ua->start($tx, sub { $self->$cb(__check_response(@_)) });
 }
 
 =head2 post
@@ -203,6 +205,8 @@ sub post {
     my $p = Mojo::Parameters->new;
     my $path = $tx->req->url->path;
 
+    Scalar::Util::weaken($self);
+
     $p->append(access_token => $self->access_token);
     $p->append(message => $message);
 
@@ -223,7 +227,7 @@ sub post {
     }
 
     $tx->req->body($p->to_string);
-    $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
+    $self->_ua->start($tx, sub { $self->$cb(__check_response(@_)) });
 }
 
 sub _message_to_tags {
@@ -264,11 +268,13 @@ sub comment {
     my $tx = $self->_tx('POST');
     my $p = Mojo::Parameters->new;
 
+    Scalar::Util::weaken($self);
+
     $p->append(access_token => $self->access_token);
     $p->append(message => $args->{message});
     $tx->req->body($p->to_string);
     push @{ $tx->req->url->path->parts }, $args->{on}, 'comments';
-    $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
+    $self->_ua->start($tx, sub { $self->$cb(__check_response(@_)) });
 }
 
 =head2 publish
@@ -326,6 +332,8 @@ sub publish {
     my $p = Mojo::Parameters->new;
     my $tags = [];
 
+    Scalar::Util::weaken($self);
+
     if($args->{message}) {
         ($args->{message}, $tags) = $self->_message_to_tags($args->{message});
     }
@@ -342,7 +350,7 @@ sub publish {
 
     push @{ $tx->req->url->path }, $args->{to}, join ':', $self->app_namespace, $args->{action};
     $tx->req->body($p->to_string);
-    $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
+    $self->_ua->start($tx, sub { $self->$cb(__check_response(@_)) });
 }
 
 =head2 delete_object
@@ -364,9 +372,11 @@ sub delete_object {
     my($self, $id, $cb) = @_;
     my $tx = $self->_tx('DELETE');
 
+    Scalar::Util::weaken($self);
+
     $tx->req->url->query->param(access_token => $self->access_token);
     push @{ $tx->req->url->path->parts }, $id;
-    $self->_ua->start($tx, sub { $cb->(__check_response(@_)) });
+    $self->_ua->start($tx, sub { $self->$cb(__check_response(@_)) });
 }
 
 =head2 picture
@@ -385,8 +395,11 @@ sub picture {
     my $self = shift;
     my $who = shift || 'me';
     my $type = shift || 'square';
+    my $url = Mojo::URL->new($ENV{FAKE_FACEBOOK_URL} || 'https://graph.facebook.com');
 
-    return Mojo::URL->new($self->_url)->path("$who/picture")->query(type => $type);
+    push @{ $url->path->parts }, $who, 'picture';
+    $url->query(type => $type);
+    $url;
 }
 
 sub __check_response {
@@ -406,7 +419,7 @@ sub __check_response {
     }
 
     $json->{__tx} = $tx if TEST;
-    return undef, $json;
+    $json;
 }
 
 sub _tx {
