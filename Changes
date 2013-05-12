@@ -1,7 +1,7 @@
 Revision history for Mojo-Facebook
 
 0.03
-       * Add "protocol" attribute
+       * Add "scheme" attribute
        * Fix callbacks are called with $self
        * Remove _url attribute
 

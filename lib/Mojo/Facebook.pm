@@ -96,7 +96,7 @@ This attribute is used by L</publish> as prefix to the publish URL:
 
     https://graph.facebook.com/$id/$app_namespace:$action
 
-=head2 protocol
+=head2 scheme
 
 Used to either run requests over "http" or "https". Default to "https".
 
@@ -104,7 +104,7 @@ Used to either run requests over "http" or "https". Default to "https".
 
 has access_token => '';
 has app_namespace => '';
-has protocol => 'https';
+has scheme => 'https';
 has _ua => sub { Mojo::UserAgent->new };
 
 =head1 METHODS
@@ -426,7 +426,7 @@ sub _tx {
     my($self, $method) = @_;
     my $url = Mojo::URL->new($ENV{FAKE_FACEBOOK_URL} || 'https://graph.facebook.com');
 
-    $url->protocol($self->protocol);
+    $url->scheme($self->scheme) if $url->host;
     $self->_ua->build_tx($method => $url);
 }
 

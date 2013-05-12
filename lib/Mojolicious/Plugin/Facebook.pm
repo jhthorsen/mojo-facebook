@@ -57,7 +57,7 @@ sub register {
         my $c = shift;
         my %args = (@_ == 1 and ref $_[0] eq '') ? (access_token => shift) : @_;
         $args{app_namespace} = $config->{app_namespace} if $config->{app_namespace};
-        $args{protocol} = $c->req->url->protocol;
+        $args{scheme} = $c->req->url->to_abs->scheme;
         $c->stash->{'mojo.plugin.facebook'} = Mojo::Facebook->new(%args);
     });
 }
