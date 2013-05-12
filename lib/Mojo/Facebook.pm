@@ -399,6 +399,7 @@ sub picture {
 
     push @{ $url->path->parts }, $who, 'picture';
     $url->query(type => $type);
+    $url->scheme($self->scheme) if $url->host;
     $url;
 }
 
