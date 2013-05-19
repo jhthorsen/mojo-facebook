@@ -2,7 +2,7 @@ NAME
     Mojo::Facebook - Talk with Facebook
 
 VERSION
-    0.0302
+    0.04
 
 DESCRIPTION
     This module implements basic actions to the Facebook graph protocol.
@@ -95,46 +95,6 @@ METHODS
 
     $res will be a hash-ref containing the result. Look for the "error" key
     to check for errors.
-
-  post
-        $self->post({
-            to => $id,
-            message => $str,
-            link => $url,
-            name => $str,
-            caption => $str,
-            description => $str,
-            picture => $url,
-        }, $callback);
-
-    Creates a post at $who's wall, looking like this:
-
-        .------------------------------------.
-        | $message ...                       |
-        |                                    |
-        | .----------.                       |
-        | | $picture |  [$link]($name)       |
-        | |          |  $caption ...         |
-        | |          |  $description ...     |
-        | '----------'                       |
-        '------------------------------------'
-
-    $callback will be called like this:
-
-        $callback->($self, $res);
-
-    $res will be a hash-ref containing the result. Look for the "error" key
-    to check for errors.
-
-    TODO: Tags are not supported yet. Getting
-
-        {
-            "error":{
-                "message":"(#100) Array does not resolve to a valid user ID",
-                "type":"OAuthException",
-                "code":100
-            }
-        }
 
   comment
         $self->comment({ on => $id, message => $str }, $callback);
