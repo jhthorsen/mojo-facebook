@@ -32,7 +32,7 @@ In a controller:
             },
             sub {
                 my($delay, $res) = @_;
-                $self->render_json($res);
+                $self->render(json => $res);
             },
         );
     }

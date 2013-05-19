@@ -12,7 +12,7 @@ my($req, @res);
 del '/dummy/289459768534' => sub {
     my $c = shift;
     $req = $c->req;
-    $c->render_json({});
+    $c->render(json => {});
 };
 
 $fb->delete_object(

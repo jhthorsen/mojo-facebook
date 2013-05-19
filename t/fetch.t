@@ -12,7 +12,7 @@ my($req, @res);
 get '/dummy/:id' => sub {
     my $c = shift;
     $req = $c->req;
-    $c->render_json({ id => $c->stash('id'), name => 'John Doe' });
+    $c->render(json => { id => $c->stash('id'), name => 'John Doe' });
 };
 
 $fb->fetch(

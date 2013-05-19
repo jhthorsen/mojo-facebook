@@ -1,6 +1,7 @@
 Revision history for Mojo-Facebook
 
 0.04
+       * render_json() is deprecated
        * post() is no longer possible
 
 0.0302   Sun May 12 11:16:04 2013

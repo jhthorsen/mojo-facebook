@@ -12,7 +12,7 @@ my($req, @res);
 post '/dummy/42/comments' => sub {
     my $c = shift;
     $req = $c->req;
-    $c->render_json({ id => 1234 });
+    $c->render(json => { id => 1234 });
 };
 
 $fb->comment(

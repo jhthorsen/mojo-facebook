@@ -10,7 +10,7 @@ plugin 'Facebook';
 get '/whatever' => sub {
     my $c = shift;
     $fb = $c->facebook('s3cret');
-    $c->render_text('yay!');
+    $c->render(text => 'yay!');
 };
 
 $t->get_ok('/whatever')->status_is(200);
