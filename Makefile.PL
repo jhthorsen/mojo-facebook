@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-  NAME => 'Mojo-Facebook',
+  NAME => 'Mojo::Facebook',
   AUTHOR => 'Jan Henning Thorsen <jhthorsen@cpan.org>',
   VERSION_FROM => 'lib/Mojo/Facebook.pm',
   PREREQ_PM => {
