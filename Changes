@@ -1,5 +1,8 @@
 Revision history for Mojo-Facebook
 
+0.0401   Fri Aug 16 23:22:00 2013
+       * Fix NAME in Makefile.PL
+
 0.04     Sun May 19 14:37:14 2013
        * render_json() is deprecated
        * post() is no longer possible
