@@ -1,5 +1,8 @@
 Revision history for Mojo-Facebook
 
+0.0402   Tue Oct  1 12:35:03 2013
+       * Add repository to Makefile.PL
+
 0.0401   Fri Aug 16 23:22:00 2013
        * Fix NAME in Makefile.PL
 
